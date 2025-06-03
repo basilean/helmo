@@ -1,0 +1,29 @@
+global:
+  organization: "BasileSoft"
+  project: "Helmo"
+  environment: "dev"
+  instance: "hotfix-123"
+  labels:
+    argo/prune: "true"
+  opt:
+    replicas: 0
+    revisionHistoryLimit: 1
+    imagePullPolicy: Always
+    image: docker.io/library/busybox
+    version: latest
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 50%
+        maxSurge: 50%
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      request:
+        cpu: 100m
+
+skeleton:
+  component: "skel"
+  deployment:
+    replicas: 2

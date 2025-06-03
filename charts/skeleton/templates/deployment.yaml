@@ -1,0 +1,5 @@
+{{ include "deployment.base" (dict
+  "ctx" .
+  "name" (printf "%s-%s" .Chart.Name "web")
+  "opt" .Values.deployment
+) }}

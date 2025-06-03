@@ -1,0 +1,6 @@
+apiVersion: v2
+name: helmo
+description: A collection of Helm template helpers.
+type: application
+version: 0.1.0
+appVersion: "1.1.0"
