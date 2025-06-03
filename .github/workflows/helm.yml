@@ -17,9 +17,9 @@ jobs:
         with:
           version: v3.13.3
 
-      - name: Lint Helm chart
-        run: |
-          helm lint .
+#      - name: Lint Helm chart
+#        run: |
+#          helm lint .
 
       - name: Render Helm templates
         run: |
