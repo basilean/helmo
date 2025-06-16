@@ -1,0 +1,147 @@
+deployment:
+  image:
+    registry:
+  replicas: 1
+
+config:
+  files:
+    - scripts/mtls.sh
+
+serviceAccount:
+  annotations:
+    wave: 1
+
+role:
+  rules:
+    - verbs:
+        - create
+      apiGroups:
+        - ''
+      resources:
+        - secrets
+
+roleBinding:
+  role: mtls-config
+  subjects:
+    - kind: ServiceAccount
+      name: mtls-config
+
+container:
+  name: my-app
+  image: myimage:latest
+  imagePullPolicy: Always
+  command:
+    - /bin/sh
+  args:
+    - -c
+    - echo hello && sleep 3600
+  workingDir: /app
+  tty: true
+  stdin: true
+  stdinOnce: false
+  terminationMessagePath: /dev/termination-log
+  terminationMessagePolicy: File
+
+  lifecycle:
+    preStop:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - echo Shutting down
+
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+    allowPrivilegeEscalation: false
+
+  env:
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+          apiVersion: v1
+    - name: ENV
+      value: production
+    - name: CONFIG_VALUE
+      valueFrom:
+        configMapKeyRef:
+          name: my-config
+          key: special.value
+          optional: true
+    - name: SECRET_VALUE
+      valueFrom:
+        secretKeyRef:
+          name: my-secret
+          key: password
+          optional: false
+    - name: RESOURCE_LIMIT
+      valueFrom:
+        resourceFieldRef:
+          containerName: my-app
+          resource: limits.cpu
+          divisor: "1m"
+
+  envFrom:
+    - configMapRef:
+        name: my-config
+    - secretRef:
+        name: my-secret
+
+  ports:
+    - name: http
+      containerPort: 8080
+      protocol: TCP
+    - name: metrics
+      containerPort: 9090
+      protocol: TCP
+
+  volumeMounts:
+    - name: data
+      mountPath: /data
+      readOnly: false
+    - name: config
+      mountPath: /etc/config
+      readOnly: true
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+      scheme: HTTP
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+    timeoutSeconds: 2
+
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 8080
+      scheme: HTTP
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+    timeoutSeconds: 2
+
+  startupProbe:
+    httpGet:
+      path: /start
+      port: 8080
+      scheme: HTTP
+    failureThreshold: 30
+    periodSeconds: 10
+    initialDelaySeconds: 0
+    successThreshold: 1
+    timeoutSeconds: 1
