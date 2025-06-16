@@ -4,3 +4,13 @@ description: A collection of Helm template helpers.
 type: application
 version: 0.1.0
 appVersion: "1.1.0"
+
+dependencies:
+  - name: mtls
+    version: 0.1.0
+    repository: "file://charts/mtls"
+    condition: mtls.enabled
+  - name: skeleton
+    version: 0.1.0
+    repository: "file://charts/skeleton"
+    condition: skeleton.enabled

@@ -28,6 +28,10 @@ global:
         cpu: 100m
 
 skeleton:
+  enabled: true
   component: "skel"
   deployment:
     replicas: 2
+
+mtls:
+  enabled: true

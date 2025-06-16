@@ -10,6 +10,11 @@
   context = . (context)
   name = Name of the object.
   options = Options for the object.
+  
+  TODO: ConfigMap names must follow DNS label format
+    * Only lowercase alphanumeric characters (a-z, 0-9), -, and . are allowed.
+    * Must start and end with an alphanumeric character.
+    * Max length: 253 characters.
 */}}
 
 {{- define "configMap.files" }}
@@ -23,7 +28,7 @@ metadata:
     {{- include "annotations.all" . | indent 4 }}
 data:
   {{- range $path := .options.files }}
-  {{ $path }}: |-
+  {{ regexSplit "/" $path -1 | last }}: |-
 {{ (tpl ($.context.Files.Get $path) $) | indent 4 }}
   {{ end }}
 {{- end }}
