@@ -4,13 +4,17 @@ global:
   environment: "dev"
   instance: "hotfix-123"
   labels:
-    argo/prune: "true"
-  opt:
+    some/global/label: "true"
+  annotations:
+    some/global/annotation: "true"
+  options:
     replicas: 0
     revisionHistoryLimit: 1
     imagePullPolicy: Always
-    image: docker.io/library/busybox
-    version: latest
+    image: 
+      registry: docker.io
+      path: library/busybox
+      version: latest
     strategy:
       type: RollingUpdate
       rollingUpdate:

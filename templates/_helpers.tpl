@@ -1,59 +1,48 @@
 {{/*
+  Helmo (https://github.com/basilean/helmo)
+  Andres Basile
+  GNU/GPL v3
+*/}}
 
+{{/*
 	Labels - All
 
 */}}
 {{- define "labels.all" }}
-app.kubernetes.io/name: {{ .Chart.Name | quote }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-environment: {{ .Values.global.environment | quote }}
-app.kubernetes.io/instance: {{ .Values.global.instance | quote }}
-app.kubernetes.io/component: {{ .Values.component | quote }}
-app.kubernetes.io/part-of: {{ .Values.global.project | quote }}
-app.kubernetes.io/organization: {{ .Values.global.organization | quote }}
+app.kubernetes.io/name: {{ .name | quote }}
+app.kubernetes.io/version: {{ .context.Chart.AppVersion | quote }}
+app.kubernetes.io/instance: {{ .context.Values.global.instance | quote }}
+app.kubernetes.io/component: {{ .context.Values.component | quote }}
+app.kubernetes.io/part-of: {{ .context.Values.global.project | quote }}
+app.kubernetes.io/organization: {{ .context.Values.global.organization | quote }}
 app.kubernetes.io/managed-by: "helm"
-  {{- range $key, $val := .Values.global.labels }}
-{{ $key }}: {{ $val | quote }}
-  {{- end }}
-  {{- range $key, $val := .Values.labels }}
-{{ $key }}: {{ $val | quote }}
-  {{- end }}
+environment: {{ .context.Values.global.environment | quote }}
+{{- if .context.Values.global.labels }}
+{{- include "keys.quote" .context.Values.global.labels }}
 {{- end }}
-
-
-{{/*
-
-  Container - Limits
-
-*/}}
-{{- define "container.limits" }}
-{{- if .cpu }}
-cpu: {{ .cpu }}
+{{- if .context.Values.labels }}
+{{- include "keys.quote" .context.Values.labels }}
 {{- end }}
-{{- if .memory }}
-memory: {{ .memory }}
+{{- if and .options .options.labels }}
+{{- include "keys.quote" .options.labels }}
 {{- end }}
 {{- end }}
 
 {{/*
-
-  Container - Resources
+	Annotations - All
 
 */}}
-{{- define "container.resources" }}
-{{- if (or .request .limits) -}}
-resources:
-  {{- if .request }}
-  request:
-    {{- include "container.limits" .request | indent 4 }}
-  {{- end }}
-  {{- if .limits }}
-  limits:
-    {{- include "container.limits" .limits | indent 4 }}
-  {{- end }}
+{{- define "annotations.all" }}
+{{- if .context.Values.global.annotations }}
+{{- include "keys.quote" .context.Values.global.annotations }}
+{{- end }}
+{{- if .context.Values.annotations }}
+{{- include "keys.quote" .context.Values.annotations }}
+{{- end }}
+{{- if and .options .options.annotations }}
+{{- include "keys.quote" .options.annotations }}
 {{- end }}
 {{- end }}
-
 
 {{/*
 	Keys - Val
@@ -71,80 +60,4 @@ resources:
   {{- range $key, $val := . }}
 {{ $key }}: {{ $val | b64enc }}
   {{- end }}
-{{- end }}
-
-
-
-
-
-
-
-{{/*
-Expand the name of the chart.
-*/}}
-{{- define "lgtm.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "lgtm.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
-{{- end }}
-
-
-
-
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "lgtm.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-
-
-
-
-{{/*
-Common labels
-*/}}
-{{- define "lgtm.labels" -}}
-helm.sh/chart: {{ include "lgtm.chart" . }}
-{{ include "lgtm.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
-Selector labels
-*/}}
-{{- define "lgtm.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "lgtm.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "lgtm.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "lgtm.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
 {{- end }}

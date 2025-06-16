@@ -1,11 +1,15 @@
 {{/*
+  Helmo (https://github.com/basilean/helmo)
+  Andres Basile
+  GNU/GPL v3
+*/}}
 
+{{/*
   configMap - Files
 
-  ctx = . (context)
+  context = . (context)
   name = Name of the object.
-  files = List of file paths.
-
+  options = Options for the object.
 */}}
 
 {{- define "configMap.files" }}
@@ -14,10 +18,12 @@ kind: ConfigMap
 metadata:
   name: {{ .name }}
   labels:
-    {{- include "labels.all" .ctx | indent 4 }}
+    {{- include "labels.all" . | indent 4 }}
+  annotations:
+    {{- include "annotations.all" . | indent 4 }}
 data:
-  {{- range $path := .files }}
+  {{- range $path := .options.files }}
   {{ $path }}: |-
-{{ (tpl ($.ctx.Files.Get $path) $) | indent 4 }}
+{{ (tpl ($.context.Files.Get $path) $) | indent 4 }}
   {{ end }}
 {{- end }}

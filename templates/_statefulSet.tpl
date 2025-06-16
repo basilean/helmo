@@ -1,4 +1,10 @@
 {{/*
+  Helmo (https://github.com/basilean/helmo)
+  Andres Basile
+  GNU/GPL v3
+*/}}
+
+{{/*
         StatefulSet - Base
 */}}
 {{- define "ss.base" }}
@@ -34,6 +40,7 @@ spec:
       labels:
         {{- include "labels.all" . | indent 8 }}
       annotations:
+        {{- include "annotations.all" . | indent 8 }}
         kubectl.kubernetes.io/default-container: {{ .Chart.Name }}
     spec:
       volumes:
