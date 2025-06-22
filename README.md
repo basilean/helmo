@@ -8,7 +8,7 @@ The goal is to have a centralized place for helpers and templates that have been
 Nowadays, all of these have been created by myself while learning Helm and ArgoCD at home, I published them to do not repeat myself (DRY) at work and be able to use them everywhere. Everyone is invited to use them and collaborate.
 
 
-| Helpers <-(Sub Charts Templates)-> Values Options
+| Helpers <-(Sub Charts Templates)-> Values Options  
 |  *.tpl  <-      auto.yaml       -> values.yaml
 
 * Helpers:
