@@ -11,7 +11,7 @@
 */}}
 {{- define "metadata.all" }}
 metadata:
-  name: {{ .options.name }}
+  name: {{ .name }}
   labels:
     {{- include "labels.all" . | indent 4 }}
   annotations:
@@ -23,10 +23,9 @@ metadata:
 
 */}}
 {{- define "labels.all" }}
-app.kubernetes.io/name: {{ (default .context.Chart.Name .options.name) | quote }}
+app.kubernetes.io/name: {{ .context.Chart.Name | quote }}
 app.kubernetes.io/version: {{ .context.Chart.AppVersion | quote }}
 app.kubernetes.io/instance: {{ .context.Values.global.instance | quote }}
-app.kubernetes.io/component: {{ .context.Values.component | quote }}
 app.kubernetes.io/part-of: {{ .context.Values.global.project | quote }}
 app.kubernetes.io/organization: {{ .context.Values.global.organization | quote }}
 app.kubernetes.io/managed-by: "helm"

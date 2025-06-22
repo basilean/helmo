@@ -8,8 +8,8 @@
 {{/*
   Volume - Base
 
-  context = . (context)
-  name = Name of the object.
+  context = "." Root context.
+  name = Unique name.
   options = Options for the object.
 */}}
 {{- define "volume.configMap" }}

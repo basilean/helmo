@@ -1,19 +1,21 @@
 {{/*
-  Helmo (https://github.com/basilean/helmo)
-  Andres Basile
+  Helmo
   GNU/GPL v3
+
+  https://github.com/basilean/helmo
 */}}
 
 {{/*
   Container - Base
 
-  context = . (context)
+  context = "." Root context.
+  name = Unique name.
   options = Options for the object.
 */}}
 {{- define "container.base" }}
 {{- $d := .context.Values.global.options -}}
 {{- $o := .options -}}
-- name: {{ $o.name | quote }}
+- name: {{ .name | quote }}
   {{- $image := (default dict $o.image) }}
   image: {{ (printf "%s/%s:%s"
   (default $d.image.registry $image.registry)
@@ -36,12 +38,13 @@
 ) | quote }}
   {{- end}}
   {{- if (or $d.resources $o.resources) }}
+  {{- $resources := default dict $o.resources }}
   resources:
-   {{- $request := (default dict $o.resources.request) }}
+    {{- $request := (default dict $resources.request) }}
     request:
       cpu: {{ (default $d.resources.request.cpu $request.cpu | quote) }}
       memory: {{ (default $d.resources.request.memory $request.memory | quote) }}
-   {{- $limits := (default dict $o.resources.limits) }}
+    {{- $limits := (default dict $resources.limits) }}
     limits:
       cpu: {{ (default $d.resources.limits.cpu $limits.cpu | quote) }}
       memory: {{ (default $d.resources.limits.memory $limits.memory | quote) }}

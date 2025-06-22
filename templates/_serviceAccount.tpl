@@ -8,17 +8,12 @@
 {{/*
   Service Account - Base
 
-  context = . (context)
+  context = "." Root context.
+  name = Unique name.
   options = Options for the object.
 */}}
-
 {{- define "serviceAccount.base" }}
 kind: ServiceAccount
 apiVersion: v1
-metadata:
-  name: {{ .options.name }}
-  labels:
-    {{- include "labels.all" . | indent 4 }}
-  annotations:
-    {{- include "annotations.all" . | indent 4 }}
+{{- include "metadata.all" . }}
 {{- end }}

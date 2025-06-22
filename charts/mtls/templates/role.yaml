@@ -1,4 +1,0 @@
-{{ include "role.base" (dict
-  "context" .
-  "options" .Values.role
-) }}

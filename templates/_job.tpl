@@ -8,7 +8,8 @@
 {{/*
   Job - Base
 
-  context = . (context)
+  context = "." Root context.
+  name = Unique name.
   options = Options for the object.
 */}}
 {{- define "job.base" }}
@@ -25,26 +26,20 @@ spec:
   suspend: false
   selector:
     matchLabels:
-      job-name: {{ $o.name }}      
+      job-name: {{ .name }}      
   template:
     metadata:
       labels:
-        job-name: {{ $o.name }}
+        job-name: {{ .name }}
 {{- include "labels.all" . | indent 8 }}
       annotations:
 {{- include "annotations.all" . | indent 8 }}
     spec:
       dnsPolicy: ClusterFirst
-      {{- if .options.initContainers }}
-      initContainers:
-        {{- range $container := .options.initContainers }}
-{{ include "container.base" (dict "context" $.context "options" $container) | indent 8 }}
-        {{- end }}
-      {{- end }}
       {{- if .options.containers }}
       containers:
-        {{- range $container := .options.containers }}
-{{ include "container.base" (dict "context" $.context "options" $container) | indent 8 }}
+        {{- range $name, $options := .options.containers }}
+{{ include "container.base" (dict "context" $.context "name" $name "options" $options) | indent 8 }}
         {{- end }}
       {{- end }}
       {{- if .options.volumes }}

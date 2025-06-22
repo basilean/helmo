@@ -1,27 +1,23 @@
 {{/*
-  Helmo (https://github.com/basilean/helmo)
-  Andres Basile
+  Helmo
   GNU/GPL v3
+
+  https://github.com/basilean/helmo
 */}}
 
 {{/*
   Deployment - Base
 
-  context = . (context)
+  context = "." Root context.
+  name = Unique name.
   options = Options for the object.
 */}}
-
 {{- define "deployment.base" }}
 {{- $d := .context.Values.global.options -}}
 {{- $o := .options -}}
 apiVersion: apps/v1
 kind: Deployment
-metadata:
-  name: {{ $o.name }}
-  labels:
-    {{- include "labels.all" . | indent 4 }}
-  annotations:
-    {{- include "annotations.all" . | indent 4 }}
+{{- include "metadata.all" . }}
 spec:
   replicas: {{ default
     $d.replicas
@@ -35,11 +31,11 @@ spec:
     {{- toYaml (default $d.strategy $o.strategy) | nindent 4 }}
   selector:
     matchLabels:
-      app.kubernetes.io/template: {{ $o.name }}
+      app.kubernetes.io/template: {{ .name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/template: {{ $o.name }}
+        app.kubernetes.io/template: {{ .name }}
         {{- include "labels.all" . | indent 8 }}
       annotations:
         {{- include "annotations.all" .| indent 8 }}
@@ -54,26 +50,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      {{- if .options.containers }}
       containers:
-        - name: {{ .name | quote }}
-          image: {{ (printf "%s/%s:%s"
-            (default $d.image.registry $o.image.registry)
-            (default $d.image.path $o.image.path)
-            (default $d.image.version $o.image.version) 
-          ) | quote }}
-          imagePullPolicy: {{ (
-            default $d.imagePullPolicy $o.imagePullPolicy
-          ) | quote }}
-          {{- include "container.resources" (default 
-            $d.resources
-            $o.resources
-          ) | nindent 10 }}
-          {{- if $o.ports }}
-          ports:
-            {{- toYaml $o.ports | nindent 12 }}
-          {{- end }}
-          {{- if $o.volumeMounts }}
-          volumeMounts:
-            {{- toYaml $o.volumeMounts | nindent 12 }}
-          {{- end }}
+        {{- range $name, $options := .options.containers }}
+{{ include "container.base" (dict "context" $.context "name" $name "options" $options) | indent 8 }}
+        {{- end }}
+      {{- end }}
 {{- end }}

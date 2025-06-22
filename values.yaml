@@ -31,12 +31,16 @@ global:
     terminationMessagePolicy: File
     terminationMessagePath: /dev/termination-log
     
-
+# Dict instead of array so I can reference them from values.
 skeleton:
   enabled: true
-  component: "skel"
   deployment:
-    replicas: 2
+    skeleton-web:
+      containers:
+        test2:
+          resources:
+            limits:
+              cpu: 700m
 
 mtls:
   enabled: true

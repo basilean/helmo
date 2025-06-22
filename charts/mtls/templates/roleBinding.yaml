@@ -1,4 +1,0 @@
-{{ include "roleBinding.base" (dict
-  "context" .
-  "options" .Values.roleBinding
-) }}

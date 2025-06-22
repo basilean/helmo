@@ -1,4 +1,0 @@
-{{ include "configMap.files" (dict
-  "context" .
-  "options" .Values.config
-) }}

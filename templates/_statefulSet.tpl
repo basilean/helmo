@@ -1,19 +1,21 @@
 {{/*
-  Helmo (https://github.com/basilean/helmo)
-  Andres Basile
+  Helmo
   GNU/GPL v3
+
+  https://github.com/basilean/helmo
 */}}
 
 {{/*
-        StatefulSet - Base
+  StatefulSet - Base
+
+  context = "." Root context.
+  name = Unique name.
+  options = Options for the object.
 */}}
 {{- define "ss.base" }}
 apiVersion: apps/v1
 kind: StatefulSet
-metadata:
-  name: {{ .Chart.Name }}
-  labels:
-    {{- include "labels.all" . | indent 4 }}
+{{- include "metadata.all" . }}
 spec:
   serviceName: {{ .Chart.Name }}
   revisionHistoryLimit: 1

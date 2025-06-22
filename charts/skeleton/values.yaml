@@ -1,13 +1,19 @@
 deployment:
-  name: skeleton-web
-  annotations:
-    foo: bar
-  image:
-    registry:
-  replicas: 1
+  skeleton-web:
+    annotations:
+      foo: bar
+    containers:
+      test:
+        image:
+          registry:
+        replicas: 1
+      test2:
+        image:
+          registry:
+        replicas: 1
 
-config:
-  name: test-files
-  files:
-    - files/test1.txt
-    - files/test2.txt
+configMap:
+  test-files:
+    files:
+      - files/test1.txt
+      - files/test2.txt

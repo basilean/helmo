@@ -1,4 +1,0 @@
-{{ include "deployment.base" (dict
-  "context" .
-  "options" .Values.deployment
-) }}

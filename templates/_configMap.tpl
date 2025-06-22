@@ -8,10 +8,11 @@
 {{/*
   ConfigMap - Files
 
-  context = . (context)
+  context = "." Root context.
+  name = Unique name.
   options = Options for the object.
 */}}
-{{- define "configMap.files" }}
+{{- define "configMap.base" }}
 apiVersion: v1
 kind: ConfigMap
 {{- include "metadata.all" . }}

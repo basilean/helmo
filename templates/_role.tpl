@@ -8,20 +8,15 @@
 {{/*
   Role - Base
 
-  context = . (context)
+  context = "." Root context.
+  name = Unique name.
   options = Options for the object.
 */}}
-
 {{- define "role.base" }}
 {{- $o := .options -}}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: {{ $o.name }}
-  labels:
-    {{- include "labels.all" . | indent 4 }}
-  annotations:
-    {{- include "annotations.all" . | indent 4 }}
+{{- include "metadata.all" . }}
 rules:
   {{- include "role.rules" $o.rules | indent 2 }}
 {{- end }}

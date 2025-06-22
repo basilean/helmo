@@ -1,55 +1,55 @@
 serviceAccount:
-  name: mtls
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
+  mtls:
+    annotations:
+      argocd.argoproj.io/sync-wave: "1"
 
 role:
-  name: mtls
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-  rules:
-    - verbs:
-        - create
-      apiGroups:
-        - ''
-      resources:
-        - secrets
+  mtls:
+    annotations:
+      argocd.argoproj.io/sync-wave: "1"
+    rules:
+      - verbs:
+          - create
+        apiGroups:
+          - ''
+        resources:
+          - secrets
 
 roleBinding:
-  name: mtls
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-  role: mtls
-  subjects:
-    - kind: ServiceAccount
-      name: mtls
+  mtls:
+    annotations:
+      argocd.argoproj.io/sync-wave: "2"
+    role: mtls
+    subjects:
+      - kind: ServiceAccount
+        name: mtls
 
-config:
-  name: mtls-script
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-  files:
-    - scripts/mtls.sh
+configMap:
+  mtls-script:
+    annotations:
+      argocd.argoproj.io/sync-wave: "2"
+    files:
+      - scripts/mtls.sh
 
 job:
-  name: mtls
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
-    argocd.argoproj.io/hook: Sync
-  containers:
-    - name: script
-      image:
-        registry: redshit.com
-      workingDir: /script
-      command: bash
-      args:
-        - -c
-        - mtls.sh
-      resources:
-        limits:
-          cpu: 500m
-  volumes:
-    - name: script
-      configMap:
-        name: mtls-script
-        defaultMode: 511
+  mtls:
+    annotations:
+      argocd.argoproj.io/sync-wave: "3"
+      argocd.argoproj.io/hook: Sync
+    containers:
+      script:
+        image:
+          registry: redshit.com
+        workingDir: /script
+        command: bash
+        args:
+          - -c
+          - mtls.sh
+        resources:
+          limits:
+            cpu: 500m
+    volumes:
+      script:
+        configMap:
+          name: mtls-script
+          defaultMode: 511
