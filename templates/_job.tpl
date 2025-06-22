@@ -16,12 +16,7 @@
 {{- $o := .options -}}
 kind: Job
 apiVersion: batch/v1
-metadata:
-  name: {{ $o.name }}
-  labels:
-{{- include "labels.all" . | indent 4 }}
-  annotations:
-{{- include "annotations.all" . | indent 4 }}
+{{- include "metadata.all" . }}
 spec:
   parallelism: 1
   completions: 1

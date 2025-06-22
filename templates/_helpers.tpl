@@ -1,8 +1,22 @@
 {{/*
-  Helmo (https://github.com/basilean/helmo)
-  Andres Basile
+  Helmo
   GNU/GPL v3
+
+  https://github.com/basilean/helmo
 */}}
+
+{{/*
+	Metadata - All
+
+*/}}
+{{- define "metadata.all" }}
+metadata:
+  name: {{ .options.name }}
+  labels:
+    {{- include "labels.all" . | indent 4 }}
+  annotations:
+    {{- include "annotations.all" . | indent 4 }}
+{{- end }}
 
 {{/*
 	Labels - All
