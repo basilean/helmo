@@ -1,5 +1,4 @@
 {{ include "deployment.base" (dict
   "context" .
-  "name" (printf "%s-%s" .Chart.Name "web")
   "options" .Values.deployment
 ) }}

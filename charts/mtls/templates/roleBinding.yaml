@@ -1,5 +1,4 @@
 {{ include "roleBinding.base" (dict
   "context" .
-  "name" "mtls-config"
   "options" .Values.roleBinding
 ) }}

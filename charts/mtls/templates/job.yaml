@@ -1,0 +1,4 @@
+{{ include "job.base" (dict
+  "context" .
+  "options" .Values.job
+) }}

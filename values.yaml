@@ -8,13 +8,13 @@ global:
   annotations:
     some/global/annotation: "true"
   options:
-    replicas: 0
-    revisionHistoryLimit: 1
-    imagePullPolicy: Always
     image: 
       registry: docker.io
       path: library/busybox
       version: latest
+    replicas: 0
+    revisionHistoryLimit: 1
+    imagePullPolicy: Always
     strategy:
       type: RollingUpdate
       rollingUpdate:
@@ -23,9 +23,14 @@ global:
     resources:
       limits:
         cpu: 200m
-        memory: 128Mi
+        memory: 256Mi
       request:
         cpu: 100m
+        memory: 128Mi
+    workingDir: null
+    terminationMessagePolicy: File
+    terminationMessagePath: /dev/termination-log
+    
 
 skeleton:
   enabled: true

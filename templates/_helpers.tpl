@@ -9,7 +9,7 @@
 
 */}}
 {{- define "labels.all" }}
-app.kubernetes.io/name: {{ .name | quote }}
+app.kubernetes.io/name: {{ (default .context.Chart.Name .options.name) | quote }}
 app.kubernetes.io/version: {{ .context.Chart.AppVersion | quote }}
 app.kubernetes.io/instance: {{ .context.Values.global.instance | quote }}
 app.kubernetes.io/component: {{ .context.Values.component | quote }}

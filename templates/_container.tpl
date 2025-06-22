@@ -7,29 +7,52 @@
 {{/*
   Container - Base
 
+  context = . (context)
+  options = Options for the object.
 */}}
 {{- define "container.base" }}
-name: {{ .name | quote }}
-image: {{ (printf "%s/%s:%s" 
-  (default .ctx.Values.global.opt.registry .opt.registry)
-  (default .ctx.Values.global.opt.path .opt.path)
-  (default .ctx.Values.global.opt.version .opt.version) 
+{{- $d := .context.Values.global.options -}}
+{{- $o := .options -}}
+- name: {{ $o.name | quote }}
+  {{- $image := (default dict $o.image) }}
+  image: {{ (printf "%s/%s:%s"
+  (default $d.image.registry $image.registry)
+  (default $d.image.path $image.path)
+  (default $d.image.version $image.version) 
 ) | quote }}
-imagePullPolicy: {{ (default
-  .ctx.Values.global.opt.imagePullPolicy
-  .opt.imagePullPolicy
+  {{- if (or $d.workingDir $o.workingDir) }}
+  workingDir: {{ (default $d.workingDir $o.workingDir) | quote }}
+  {{- end}}
+  {{- if $o.args }}
+  args:
+    {{- range $arg := $o.args }}
+    - {{ $arg | quote }}
+    {{- end}}
+  {{- end}}
+  {{- if (or $d.imagePullPolicy $o.imagePullPolicy) }}
+  imagePullPolicy: {{ (default
+  $d.imagePullPolicy
+  $o.imagePullPolicy
 ) | quote }}
-{{- include "container.resources" (default 
-  .ctx.Values.global.opt.resources
-  .opt.resources
-) | nindent 10 }}
-{{- if .opt.ports }}
-ports:
-  {{- toYaml .opt.ports | nindent 12 }}
+  {{- end}}
+  {{- if (or $d.resources $o.resources) }}
+  resources:
+   {{- $request := (default dict $o.resources.request) }}
+    request:
+      cpu: {{ (default $d.resources.request.cpu $request.cpu | quote) }}
+      memory: {{ (default $d.resources.request.memory $request.memory | quote) }}
+   {{- $limits := (default dict $o.resources.limits) }}
+    limits:
+      cpu: {{ (default $d.resources.limits.cpu $limits.cpu | quote) }}
+      memory: {{ (default $d.resources.limits.memory $limits.memory | quote) }}
+  {{- end}}
+{{- if $o.ports }}
+  ports:
+  {{- toYaml $o.ports | nindent 4 }}
 {{- end }}
-{{- if .opt.volumeMounts }}
-volumeMounts:
-  {{- toYaml .opt.volumeMounts | nindent 12 }}
+{{- if $o.volumeMounts }}
+  volumeMounts:
+  {{- toYaml $o.volumeMounts | nindent 4 }}
 {{- end }}
 {{- end }}
 
@@ -53,6 +76,11 @@ memory: {{ .memory }}
 {{/*
 
   Container - Resources
+
+{{- include "container.resources" (default 
+  $d.resources
+  $o.resources
+) | nindent 4 }}
 
 */}}
 {{- define "container.resources" }}

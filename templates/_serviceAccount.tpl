@@ -1,14 +1,14 @@
 {{/*
-  Helmo (https://github.com/basilean/helmo)
-  Andres Basile
+  Helmo
   GNU/GPL v3
+
+  https://github.com/basilean/helmo
 */}}
 
 {{/*
   Service Account - Base
 
   context = . (context)
-  name = Name of the object.
   options = Options for the object.
 */}}
 
@@ -16,7 +16,7 @@
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: {{ .name }}
+  name: {{ .options.name }}
   labels:
     {{- include "labels.all" . | indent 4 }}
   annotations:

@@ -1,28 +1,29 @@
 {{/*
-  Helmo (https://github.com/basilean/helmo)
-  Andres Basile
+  Helmo
   GNU/GPL v3
+
+  https://github.com/basilean/helmo
 */}}
 
 {{/*
   Role - Base
 
   context = . (context)
-  name = Name of the object.
   options = Options for the object.
 */}}
 
 {{- define "role.base" }}
+{{- $o := .options -}}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .name }}
+  name: {{ $o.name }}
   labels:
     {{- include "labels.all" . | indent 4 }}
   annotations:
     {{- include "annotations.all" . | indent 4 }}
 rules:
-  {{- include "role.rules" .options.rules | indent 2 }}
+  {{- include "role.rules" $o.rules | indent 2 }}
 {{- end }}
 
 {{- define "role.rules" }}

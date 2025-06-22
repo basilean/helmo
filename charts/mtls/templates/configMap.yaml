@@ -1,5 +1,4 @@
 {{ include "configMap.files" (dict
   "context" .
-  "name" (printf "%s-%s" .Chart.Name "script")
   "options" .Values.config
 ) }}

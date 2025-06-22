@@ -1,28 +1,29 @@
 {{/*
-  Helmo (https://github.com/basilean/helmo)
-  Andres Basile
+  Helmo
   GNU/GPL v3
+
+  https://github.com/basilean/helmo
 */}}
 
 {{/*
   RoleBinding - Base
 
   context = . (context)
-  name = Name of the object.
   options = Options for the object.
 */}}
 
 {{- define "roleBinding.base" }}
+{{- $o := .options -}}
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .name }}
+  name: {{ $o.name }}
   labels:
     {{- include "labels.all" . | indent 4 }}
   annotations:
     {{- include "annotations.all" . | indent 4 }}
 subjects:
-  {{- range $subject := .options.subjects }}
+  {{- range $subject := $o.subjects }}
   - kind: {{ $subject.kind }}
     name: {{ $subject.name }}
     namespace: {{ $.context.Release.Namespace }}
@@ -30,5 +31,5 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ .options.role }}
+  name: {{ $o.role }}
 {{- end }}
