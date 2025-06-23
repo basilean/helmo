@@ -11,6 +11,8 @@
   context = "." Root context.
   name = Unique name.
   options = Options for the object.
+
+DNS/identity handled externally, avoids custom hostnames
 */}}
 {{- define "ss.base" }}
 apiVersion: apps/v1

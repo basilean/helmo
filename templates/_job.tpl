@@ -11,6 +11,8 @@
   context = "." Root context.
   name = Unique name.
   options = Options for the object.
+
+  restartPolicy: OnFailure  # or Never
 */}}
 {{- define "job.base" }}
 {{- $d := .context.Values.global.options -}}
@@ -26,27 +28,7 @@ spec:
   suspend: false
   selector:
     matchLabels:
-      job-name: {{ .name }}      
+      app.kubernetes.io/template: {{ .name }}      
   template:
-    metadata:
-      labels:
-        job-name: {{ .name }}
-{{- include "labels.all" . | indent 8 }}
-      annotations:
-{{- include "annotations.all" . | indent 8 }}
-    spec:
-      dnsPolicy: ClusterFirst
-      {{- if .options.containers }}
-      containers:
-        {{- range $name, $options := .options.containers }}
-{{ include "container.base" (dict "context" $.context "name" $name "options" $options) | indent 8 }}
-        {{- end }}
-      {{- end }}
-      {{- if .options.volumes }}
-      volumes:
-        {{- range $volume := .options.volumes }}
-{{ include "volume.configMap" (dict "context" $.context "name" $volume.name "options" $volume.configMap) | indent 8 }}
-          {{/* TODO: volume.base */}}
-        {{- end }}
-      {{- end }}
+{{- include "pod.base" . | indent 4}}
 {{- end }}
