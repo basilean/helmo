@@ -48,8 +48,15 @@ job:
         resources:
           limits:
             cpu: 500m
+        volumeMounts:
+          script:
+            path: /script
+          config:
+            path: /config
     volumes:
       script:
         configMap:
           name: mtls-script
-          defaultMode: 511
+      config:
+        configMap:
+          name: mtls-config

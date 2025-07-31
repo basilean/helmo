@@ -40,9 +40,8 @@ spec:
   {{- end }}
   {{- if .options.volumes }}
   volumes:
-    {{- range $volume := .options.volumes }}
-{{ include "volume.configMap" (dict "context" $.context "name" $volume.name "options" $volume.configMap) | indent 4 }}
-      {{/* TODO: volume.base */}}
+    {{- range $name, $options := .options.volumes }}
+{{ include "volume.auto" (dict "context" $.context "name" $name "options" $options) | indent 4 }}
     {{- end }}
   {{- end }}
 {{- end }}

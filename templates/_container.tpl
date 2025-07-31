@@ -55,7 +55,9 @@
 {{- end }}
 {{- if $o.volumeMounts }}
   volumeMounts:
-  {{- toYaml $o.volumeMounts | nindent 4 }}
+    {{- range $name, $options := $o.volumeMounts }}
+{{ include "volume.mount" (dict "context" $.context "name" $name "options" $options) | indent 4 }}
+    {{- end }}
 {{- end }}
 {{- end }}
 

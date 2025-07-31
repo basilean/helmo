@@ -30,6 +30,9 @@ global:
     workingDir: null
     terminationMessagePolicy: File
     terminationMessagePath: /dev/termination-log
+    volume:
+      configMap:
+        
     
 # Dict instead of array so I can reference them from values.
 skeleton:

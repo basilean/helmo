@@ -58,7 +58,8 @@ environment: {{ .context.Values.global.environment | quote }}
 {{- end }}
 
 {{/*
-	Keys - Val
+	Keys - Quote
+
 */}}
 {{- define "keys.quote" }}
   {{- range $key, $val := . }}
@@ -68,6 +69,7 @@ environment: {{ .context.Values.global.environment | quote }}
 
 {{/*
 	Keys - B64
+
 */}}
 {{- define "keys.b64" }}
   {{- range $key, $val := . }}

@@ -51,7 +51,7 @@ job: # Kind (helper name)
 ✅ Completed | 🛠️ Work in Progress | ❌ Planed
 
 ### auto
-* ✅ Helper for auto bind templates.
+* ✅ Bind templates.
 
 ### configMap
 * ✅ Files.
@@ -72,8 +72,9 @@ job: # Kind (helper name)
 * ❌ Pending.
 
 ### helpers.
-* ✅ Keys.
-* ✅ Base 64 keys.
+* ❌ Keys raw.
+* ✅ Keys quote.
+* ✅ Keys base 64.
 * ✅ Labels all.
 * ✅ Annotations all.
 
@@ -101,12 +102,17 @@ job: # Kind (helper name)
 
 ### secret
 * ❌ Random value.
+* ❌ Files.
+* ❌ Binary files.
+* ❌ Key/Value pairs.
+* ❌ Inmutable option.
 
 ### secretStore
 * ❌ Pending.
 
 ### service
-* ❌ Pending.
+* ❌ ClusterIP.
+* ❌ NodePort.
 
 ### serviceAccount
 * ✅ Base.
