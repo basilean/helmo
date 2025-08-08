@@ -3,15 +3,45 @@ global:
   project: "Helmo"
   environment: "dev"
   instance: "hotfix-123"
-  labels:
-    some/global/label: "true"
-  annotations:
-    some/global/annotation: "true"
+  labels: {}
+  annotations: {}
+  default:
+    service: {}
+    deployment:
+      replicas: 0
+    container:
+      securityContext:
+        allowPrivilegeEscalation: false
+        privileged: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      image:
+        registry: docker.io
+        path:
+        version:
+      resources:
+        limits:
+          cpu: 200m
+          memory: 256Mi
+        request:
+          cpu: 100m
+          memory: 128Mi
+    pod:
+      serviceAccountName:
+      securityContext:
+        runAsNonRoot:
+        seccompProfile:
+          type: RuntimeDefault
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+
   options:
+    readOnlyRootFilesystem: false
+    enabled: true
     image: 
-      registry: docker.io
-      path: library/busybox
-      version: latest
+      version: stable
     replicas: 0
     revisionHistoryLimit: 1
     imagePullPolicy: Always
@@ -27,7 +57,6 @@ global:
       request:
         cpu: 100m
         memory: 128Mi
-    workingDir: null
     terminationMessagePolicy: File
     terminationMessagePath: /dev/termination-log
     volume:
@@ -37,13 +66,31 @@ global:
 # Dict instead of array so I can reference them from values.
 skeleton:
   enabled: true
+  configMap:
+    karlo:
+      keys:
+        fuck: you
   deployment:
-    skeleton-web:
+    skeleton:
+      initContainers:
+        bullshit:
+          command:
+            - ash
+          args:
+            - '-c'
+            - 'env'
+          securityContext:
+            runAsUser: 1000
       containers:
-        test2:
-          resources:
-            limits:
-              cpu: 700m
+        web:
+          command:
+            - bash
+          args:
+            - '-c'
+            - 'while true; do date; sleep 300; done'
+          image: 
+            path: bitnami/kubectl
+            version: latest
 
 mtls:
-  enabled: true
+  enabled: false

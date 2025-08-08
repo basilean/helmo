@@ -5,22 +5,26 @@
   https://github.com/basilean/helmo
 */}}
 
-{{/*
-        Service - NodePort
-*/}}
-{{- define "service.nodePort" }}
+{{- define "service.auto" }}
+{{- $d := .context.Values.global.default.service }}
+{{- $o := .options }}
 kind: Service
 apiVersion: v1
-metadata:
-  name: {{ .Chart.Name }}
-  labels:
-    {{- include "labels.all" . | indent 4 }}
-  annotations:
-    service.alpha.openshift.io/serving-cert-secret-name: {{ .Chart.Name }}-tls
+{{- include "metadata.all" . }}
 spec:
+  type: {{ $o.type }}
   ports:
-    {{- toYaml .Values.nodePort | nindent 4 }}
-  type: NodePort
+{{- range $port := .options.ports }}
+{{- include "service.port" $port | indent 4}}
+{{- end }}
   selector:
-    app.kubernetes.io/name: {{ .Chart.Name }}
+{{- include "keys.quote" $o.selector | indent 4}}
+{{- end }}
+
+{{- define "service.port" }}
+- name: {{ .name }}
+{{- include "v.s" (dict "k" "protocol" "o" . "d" (dict) "f" "TCP") | indent 2 }}
+{{- include "v.s" (dict "k" "port" "o" . "d" (dict) "f" "8080") | indent 2 }}
+{{- include "v.s" (dict "k" "targetPort" "o" . "d" (dict) "f" "8080") | indent 2 }}
+{{- include "v.s" (dict "k" "nodePort" "o" . "d" (dict)) | indent 2 }}
 {{- end }}

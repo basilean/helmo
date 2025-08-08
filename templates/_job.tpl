@@ -26,9 +26,6 @@ spec:
   backoffLimit: 2
   completionMode: NonIndexed
   suspend: false
-  selector:
-    matchLabels:
-      app.kubernetes.io/template: {{ .name }}      
   template:
 {{- include "pod.base" . | indent 4}}
 {{- end }}

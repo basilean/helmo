@@ -36,14 +36,16 @@ job:
     annotations:
       argocd.argoproj.io/sync-wave: "3"
       argocd.argoproj.io/hook: Sync
+    serviceAccountName: mtls
     containers:
       script:
         image:
-          registry: redshit.com
+          path: bitnami/kubectl
+          version: latest
         workingDir: /script
-        command: bash
+        command:
+          - bash
         args:
-          - -c
           - mtls.sh
         resources:
           limits:
@@ -51,12 +53,12 @@ job:
         volumeMounts:
           script:
             path: /script
-          config:
-            path: /config
+          tmp:
+            path: /tmp
     volumes:
       script:
         configMap:
           name: mtls-script
-      config:
-        configMap:
-          name: mtls-config
+      tmp:
+        emptyDir: {}
+    restartPolicy: Never

@@ -14,7 +14,7 @@
 {{- range $object, $list := .Values }}
 {{- if not (or (eq $object "global") (eq $object "enabled")) }}
   {{- range $name, $options := $list }}
-  {{- $helper := printf "%s.%s" $object "base" }}
+  {{- $helper := printf "%s.%s" $object "auto" }}
   {{- $arguments := dict "context" $context "name" $name "options" $options }}
 {{ include $helper $arguments }}
 ---

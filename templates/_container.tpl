@@ -15,40 +15,40 @@
 {{- define "container.base" }}
 {{- $d := .context.Values.global.options -}}
 {{- $o := .options -}}
-- name: {{ .name | quote }}
-  {{- $image := (default dict $o.image) }}
+- name: {{ .name }}
+  securityContext:
+  {{- $os := (default dict $o.securityContext) }}
+{{- include "v.s" (dict "k" "allowPrivilegeEscalation" "o" $os "d" $d "f" false) | indent 4 }}
+{{- include "v.s" (dict "k" "privileged" "o" $os "d" $d "f" false) | indent 4 }}
+{{- include "v.s" (dict "k" "runAsUser" "o" $os "d" $d) | indent 4 }}
+{{- include "v.s" (dict "k" "readOnlyRootFilesystem" "o" $os "d" $d "f" true) | indent 4 }}
+    capabilities:
+{{- include "l.s" (dict "k" "drop" "o" $o "d" $d "f" (list "ALL")) | indent 6 }}
+  {{- $oi := (default dict $o.image) }}
+  {{- $di := (default dict $d.image) }}
   image: {{ (printf "%s/%s:%s"
-  (default $d.image.registry $image.registry)
-  (default $d.image.path $image.path)
-  (default $d.image.version $image.version) 
-) | quote }}
-  {{- if (or $d.workingDir $o.workingDir) }}
-  workingDir: {{ (default $d.workingDir $o.workingDir) | quote }}
-  {{- end}}
-  {{- if $o.args }}
-  args:
-    {{- range $arg := $o.args }}
-    - {{ $arg | quote }}
-    {{- end}}
-  {{- end}}
-  {{- if (or $d.imagePullPolicy $o.imagePullPolicy) }}
-  imagePullPolicy: {{ (default
-  $d.imagePullPolicy
-  $o.imagePullPolicy
-) | quote }}
-  {{- end}}
-  {{- if (or $d.resources $o.resources) }}
-  {{- $resources := default dict $o.resources }}
+    (include "v.p" (dict "k" "registry" "o" $oi "d" $di "f" "docker.io"))
+    (include "v.p" (dict "k" "path" "o" $oi "d" $di "f" "library/busybox"))
+    (include "v.p" (dict "k" "version" "o" $oi "d" $di "f" "latest"))
+  ) }}
+{{- include "v.s" (dict "k" "workingDir" "o" $o "d" $d) | indent 2 }}
+{{- include "l.s" (dict "k" "command" "o" $o "d" $d) | indent 2 }}
+{{- include "l.s" (dict "k" "args" "o" $o "d" $d) | indent 2 }}
+{{- include "v.s" (dict "k" "imagePullPolicy" "o" $o "d" $d) | indent 2 }}
+  {{- $or := default dict $o.resources }}
+  {{- $dr := default dict $d.resources }}
   resources:
-    {{- $request := (default dict $resources.request) }}
-    request:
-      cpu: {{ (default $d.resources.request.cpu $request.cpu | quote) }}
-      memory: {{ (default $d.resources.request.memory $request.memory | quote) }}
-    {{- $limits := (default dict $resources.limits) }}
+    {{- $orr := default dict $or.request }}
+    {{- $drr := default dict $dr.request }}
+    requests:
+      cpu: {{ include "v.p" (dict "k" "cpu" "o" $orr "d" $drr "f" "100m") }}
+      memory: {{ include "v.p" (dict "k" "memory" "o" $orr "d" $drr "f" "200Mi") }}
+    {{- $orl := default dict $or.limits }}
+    {{- $drl := default dict $dr.limits }}
     limits:
-      cpu: {{ (default $d.resources.limits.cpu $limits.cpu | quote) }}
-      memory: {{ (default $d.resources.limits.memory $limits.memory | quote) }}
-  {{- end}}
+      cpu: {{ include "v.p" (dict "k" "cpu" "o" $orl "d" $drl "f" "200m") }}
+      memory: {{ include "v.p" (dict "k" "memory" "o" $orl "d" $drl "f" "400Mi") }}
+
 {{- if $o.ports }}
   ports:
   {{- toYaml $o.ports | nindent 4 }}

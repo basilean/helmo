@@ -1,24 +1,31 @@
-{{/*
-  Helmo
-  GNU/GPL v3
+{{/* configMap */}}
 
-  https://github.com/basilean/helmo
-*/}}
-
-{{/*
-  ConfigMap - Files
-
-  context = "." Root context.
-  name = Unique name.
-  options = Options for the object.
-*/}}
-{{- define "configMap.base" }}
+{{- define "configMap.auto" -}}
 apiVersion: v1
 kind: ConfigMap
 {{- include "metadata.all" . }}
+{{- if .options.keys }}
 data:
-  {{- range $path := .options.files }}
+{{- include "keys.quote" .options.keys | indent 2 }}
+{{- else if .options.files }}
+data:
+{{- include "configMap.files" . }}
+{{- else if .options.binary }}
+binaryData:
+{{- include "configMap.binary" . }}
+{{- else }}
+{{- end }}
+{{- end }}
+
+{{- define "configMap.files" }}
+{{- range $path := .options.files }}
   {{ regexSplit "/" $path -1 | last }}: |-
 {{ (tpl ($.context.Files.Get $path) $) | indent 4 }}
-  {{ end }}
+{{ end }}
+{{- end }}
+
+{{- define "configMap.binary" }}
+{{- range $path := .options.binary }}
+  {{ regexSplit "/" $path -1 | last }}: {{ $.context.Files.Get $path | b64enc }}
+{{ end }}
 {{- end }}

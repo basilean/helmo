@@ -63,7 +63,7 @@ function mksecret() {
 	KEY=${2}
 	CERT=${3}
 	CA_CERT=${4}
-	oc create secret generic ${NAME} \
+	kubectl create secret generic ${NAME} \
 		--from-file=${KEY} \
 		--from-file=${CERT} \
 		--from-file=${CA_CERT}

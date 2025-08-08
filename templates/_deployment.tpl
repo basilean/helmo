@@ -14,9 +14,10 @@
 
   Must support rolling updates, restartPolicy: Always
 */}}
-{{- define "deployment.base" }}
-{{- $d := .context.Values.global.options -}}
-{{- $o := .options -}}
+{{- define "deployment.auto" }}
+{{- $d := .context.Values.global.options }}
+{{- $o := .options }}
+{{- if eq (include "v.p" (dict "k" "enabled" "o" $o "d" $d "f" true)) "true" }}
 apiVersion: apps/v1
 kind: Deployment
 {{- include "metadata.all" . }}
@@ -36,4 +37,5 @@ spec:
       app.kubernetes.io/template: {{ .name }}
   template:
 {{- include "pod.base" . | indent 4}}
+{{- end }}
 {{- end }}

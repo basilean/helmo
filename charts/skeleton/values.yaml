@@ -1,19 +1,23 @@
 deployment:
-  skeleton-web:
-    annotations:
-      foo: bar
+  skeleton:
     containers:
-      test:
-        image:
-          registry:
+      web:
         replicas: 1
-      test2:
-        image:
-          registry:
-        replicas: 1
+    restartPolicy: Always
 
-configMap:
-  test-files:
-    files:
-      - files/test1.txt
-      - files/test2.txt
+service:
+  skeleton:
+    type: clusterIP
+    selector:
+      app: kerli
+    ports:
+      - name: karlo
+        protocol: TCP
+        port: 80
+        targetPort: 8080
+        
+#configMap:
+#  test-files:
+#    files:
+#      - files/test1.txt
+#      - files/test2.txt

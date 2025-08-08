@@ -76,3 +76,70 @@ environment: {{ .context.Values.global.environment | quote }}
 {{ $key }}: {{ $val | b64enc }}
   {{- end }}
 {{- end }}
+
+
+{{/*
+	List - Print
+*/}}
+{{- define "l.p" }}
+{{- range $i := . }}
+- {{ $i }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+	List - Set
+*/}}
+{{- define "l.s" }}
+{{- if hasKey .o .k }}
+{{ .k }}:
+{{- include "l.p" (index .o .k) | indent 2 }}
+{{- else if hasKey .d .k }}
+{{ .k }}:
+{{- include "l.p" (index .d .k) | indent 2 }}
+{{- else if hasKey . "f" }}
+{{ .k }}:
+{{- include "l.p" .f | indent 2 }}
+{{- end }}
+{{- end }}
+
+{{/*
+	Value - Set
+*/}}
+{{- define "v.s" }}
+{{- if hasKey .o .k }}
+{{ .k }}: {{ index .o .k }}
+{{- else if hasKey .d .k }}
+{{ .k }}: {{ index .d .k }}
+{{- else if hasKey . "f" }}
+{{ .k }}: {{ .f }}
+{{- else }}
+{{- end }}
+{{- end }}
+
+{{/*
+	Value - Print
+*/}}
+{{- define "v.p" }}
+{{- if hasKey .o .k }}
+{{- index .o .k }}
+{{- else if hasKey .d .k }}
+{{- index .d .k }}
+{{- else if hasKey . "f" }}
+{{- .f }}
+{{- end }}
+{{- end }}
+
+{{/*
+	Is - Enabled
+*/}}
+{{- define "i.e" }}
+{{- if hasKey .o .k }}
+{{- index .o .k }}
+{{- else if hasKey .d .k }}
+{{- index .d .k }}
+{{- else if hasKey . "f" }}
+{{- .f }}
+{{- end }}
+{{- end }}

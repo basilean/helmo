@@ -22,9 +22,9 @@ rules:
 {{- end }}
 
 {{- define "role.rules" }}
-{{- range $rule := . }}
+-{{- range $rule := . -}}
   {{- range $key, $vals := $rule }}
-- {{ $key }}:
+  {{ $key }}:
     {{- range $val := $vals }}
   - {{ $val | quote }}
     {{- end }}
