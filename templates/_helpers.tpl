@@ -107,6 +107,15 @@ environment: {{ .context.Values.global.environment | quote }}
 {{/*
 	Value - Set
 */}}
+{{- define "v.e" }}
+{{- if hasKey .o .k }}
+{{ .k }}: {{ index .o .k }}
+{{- end }}
+{{- end }}
+
+{{/*
+	Value - Set
+*/}}
 {{- define "v.s" }}
 {{- if hasKey .o .k }}
 {{ .k }}: {{ index .o .k }}
