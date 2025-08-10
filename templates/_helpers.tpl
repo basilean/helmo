@@ -79,6 +79,34 @@ environment: {{ .context.Values.global.environment | quote }}
 
 
 {{/*
+	Env - Print
+*/}}
+{{- define "e.p" }}
+{{- range $k, $v := . }}
+- name: {{ $k }}
+  value: {{ $v }}
+{{- end }}
+{{- end }}
+
+{{/*
+	Env - List
+*/}}
+{{- define "e.l" }}
+{{- $o := default dict .o }}
+{{- $d := default dict .d }}
+{{- if hasKey $o .k }}
+{{ .k }}:
+{{- include "l.p" (index $o .k) | indent 2 }}
+{{- else if hasKey $d .k }}
+{{ .k }}:
+{{- include "l.p" (index $d .k) | indent 2 }}
+{{- else if hasKey . "f" }}
+{{ .k }}:
+{{- include "l.p" .f | indent 2 }}
+{{- end }}
+{{- end }}
+
+{{/*
 	List - Print
 */}}
 {{- define "l.p" }}
@@ -92,12 +120,14 @@ environment: {{ .context.Values.global.environment | quote }}
 	List - Set
 */}}
 {{- define "l.s" }}
-{{- if hasKey .o .k }}
+{{- $o := default dict .o }}
+{{- $d := default dict .d }}
+{{- if hasKey $o .k }}
 {{ .k }}:
-{{- include "l.p" (index .o .k) | indent 2 }}
-{{- else if hasKey .d .k }}
+{{- include "l.p" (index $o .k) | indent 2 }}
+{{- else if hasKey $d .k }}
 {{ .k }}:
-{{- include "l.p" (index .d .k) | indent 2 }}
+{{- include "l.p" (index $d .k) | indent 2 }}
 {{- else if hasKey . "f" }}
 {{ .k }}:
 {{- include "l.p" .f | indent 2 }}
@@ -105,7 +135,7 @@ environment: {{ .context.Values.global.environment | quote }}
 {{- end }}
 
 {{/*
-	Value - Set
+	Value - Exists
 */}}
 {{- define "v.e" }}
 {{- if hasKey .o .k }}
@@ -117,10 +147,12 @@ environment: {{ .context.Values.global.environment | quote }}
 	Value - Set
 */}}
 {{- define "v.s" }}
-{{- if hasKey .o .k }}
-{{ .k }}: {{ index .o .k }}
-{{- else if hasKey .d .k }}
-{{ .k }}: {{ index .d .k }}
+{{- $o := default dict .o }}
+{{- $d := default dict .d }}
+{{- if hasKey $o .k }}
+{{ .k }}: {{ index $o .k }}
+{{- else if hasKey $d .k }}
+{{ .k }}: {{ index $d .k }}
 {{- else if hasKey . "f" }}
 {{ .k }}: {{ .f }}
 {{- else }}
